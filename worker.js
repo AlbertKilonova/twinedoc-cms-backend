@@ -62,27 +62,32 @@ export default {
         <html>
         <head><title>正在同步登录状态...</title></head>
         <body>
-          <script>
-            (function() {
-              const result = ${JSON.stringify(result)};
-              const target = window.opener || window.parent;
-              console.log("正在尝试向父窗口发送消息...");
-              
-              if (result.access_token) {
-                target.postMessage("authorizing:github:success:" + JSON.stringify(result), "*");
-                console.log("发送成功！");
-              } else {
-                target.postMessage("authorizing:github:error:" + (result.error_description || "登录失败"), "*");
-                console.log("发送了错误信息");
-              }
-              
-              // 稍微等一下下再关，让消息飞一会儿
-              setTimeout(() => {
-                console.log("关闭窗口");
-                window.close();
-              }, 500);
-            })();
-          </script>
+          // 在 Worker 的返回脚本部分替换
+            <script>
+              (function() {
+                const result = ${JSON.stringify(result)};
+                const message = "authorizing:github:success:" + JSON.stringify(result);
+                
+                // 1. 尝试发送给 opener (弹出框模式)
+                if (window.opener) {
+                  window.opener.postMessage(message, "https://cms.twinedoc.qzz.io");
+                  // 兼容某些老版本 CMS
+                  window.opener.postMessage(result, "https://cms.twinedoc.qzz.io");
+                }
+                
+                // 2. 尝试发送给 parent (如果 CMS 是在 iframe 里跑的)
+                if (window.parent && window.parent !== window) {
+                  window.parent.postMessage(message, "https://cms.twinedoc.qzz.io");
+                }
+            
+                // 给波波一个视觉反馈，看到这个就说明 Token 真的发出去了
+                document.body.innerHTML = "<h1>登录成功喵！</h1><p>正在同步到 CMS 页面...</p>";
+            
+                setTimeout(() => {
+                  window.close();
+                }, 1500); // 稍微多等一会儿，确保消息发出
+              })();
+            </script>
           <p>登录成功，正在返回 CMS... 如果窗口没有自动关闭，请手动关闭喵~</p>
         </body>
         </html>`,

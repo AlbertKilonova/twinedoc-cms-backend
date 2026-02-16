@@ -1,5 +1,9 @@
 {
   "name": "twinedoc",
   "compatibility_date": "2026-02-16",
-  "main": "worker.js" 
+  "main": "worker.js",
+  "vars": {
+    "GITHUB_CLIENT_ID": "Ov23lihbx2ijBvKPcptc",
+    "GITHUB_CLIENT_SECRET": "678a2883dbfb913f9c62125a02f7c3b2f8e4a6a3"
+  }
 }

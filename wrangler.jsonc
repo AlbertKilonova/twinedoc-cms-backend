@@ -1,5 +1,5 @@
 {
-  "name": "twinedoc-auth",
+  "name": "twinedoc",
   "compatibility_date": "2026-02-16",
   "main": "worker.js" 
 }
